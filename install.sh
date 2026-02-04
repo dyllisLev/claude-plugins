@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Claude Code Dev Workflow Plugin Installer
-# This script installs the dev-workflow plugin using symlinks
+# This script installs the dev-workflow plugin using symlinks and configures MCP servers
 
 set -e  # Exit on error
 
@@ -16,6 +16,7 @@ NC='\033[0m' # No Color
 CLAUDE_DIR="${HOME}/.claude"
 PLUGIN_NAME="dev-workflow"
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/${PLUGIN_NAME}"
+MCP_CONFIG_FILE="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
 
 echo "🚀 Installing Claude Code Dev Workflow Plugin..."
 echo ""
@@ -61,9 +62,9 @@ create_symlink() {
 
 # Install agents
 echo ""
-echo -e "${BLUE}[1/3] Installing agents...${NC}"
+echo -e "${BLUE}[1/4] Installing agents...${NC}"
 if create_symlink "${SOURCE_DIR}/agents" "${CLAUDE_DIR}/agents" "agents"; then
-    echo -e "${GREEN}✓ Agents installed${NC}"
+    echo -e "${GREEN}✓ Agents installed (12 agents)${NC}"
 else
     echo -e "${RED}✗ Failed to install agents${NC}"
     exit 1
@@ -71,9 +72,9 @@ fi
 
 # Install commands
 echo ""
-echo -e "${BLUE}[2/3] Installing commands...${NC}"
+echo -e "${BLUE}[2/4] Installing commands...${NC}"
 if create_symlink "${SOURCE_DIR}/commands" "${CLAUDE_DIR}/commands" "commands"; then
-    echo -e "${GREEN}✓ Commands installed${NC}"
+    echo -e "${GREEN}✓ Commands installed (dev command)${NC}"
 else
     echo -e "${RED}✗ Failed to install commands${NC}"
     exit 1
@@ -81,7 +82,7 @@ fi
 
 # Install skills
 echo ""
-echo -e "${BLUE}[3/3] Installing skills...${NC}"
+echo -e "${BLUE}[3/4] Installing skills...${NC}"
 
 # Create skills directory if it doesn't exist
 mkdir -p "${CLAUDE_DIR}/skills"
@@ -102,6 +103,66 @@ if create_symlink \
     echo -e "${GREEN}✓ systematic-debugging skill installed${NC}"
 fi
 
+# Configure MCP servers
+echo ""
+echo -e "${BLUE}[4/4] Configuring MCP servers...${NC}"
+
+# Ask user if they want to configure MCP servers
+echo -e "${YELLOW}MCP servers (context7, playwright) are required for dev-workflow.${NC}"
+read -p "Configure MCP servers now? (Y/n): " -n 1 -r
+echo
+
+if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    # Create config directory if it doesn't exist
+    mkdir -p "$(dirname "$MCP_CONFIG_FILE")"
+
+    # Check if config file exists and has MCP servers
+    if [ -f "$MCP_CONFIG_FILE" ] && grep -q "mcpServers" "$MCP_CONFIG_FILE"; then
+        echo -e "${YELLOW}MCP servers already configured.${NC}"
+        read -p "Overwrite existing MCP configuration? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo -e "${BLUE}Skipping MCP configuration.${NC}"
+        else
+            # Create MCP config
+            cat > "$MCP_CONFIG_FILE" << 'EOF'
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upggr/context7-mcp"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@executeautomation/playwright-mcp-server"]
+    }
+  }
+}
+EOF
+            echo -e "${GREEN}✓ MCP servers configured${NC}"
+        fi
+    else
+        # Create MCP config
+        cat > "$MCP_CONFIG_FILE" << 'EOF'
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upggr/context7-mcp"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@executeautomation/playwright-mcp-server"]
+    }
+  }
+}
+EOF
+        echo -e "${GREEN}✓ MCP servers configured${NC}"
+    fi
+else
+    echo -e "${BLUE}Skipping MCP configuration. Run ./setup-mcp.sh later to configure.${NC}"
+fi
+
 # Verify installation
 echo ""
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -116,10 +177,17 @@ echo "   • ~/.claude/agents → dev-workflow/agents (12 agents)"
 echo "   • ~/.claude/commands → dev-workflow/commands (dev command)"
 echo "   • ~/.claude/skills/test-driven-development"
 echo "   • ~/.claude/skills/systematic-debugging"
+if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    echo "   • MCP servers: context7, playwright"
+fi
+echo ""
+echo "⚠️  IMPORTANT: Restart Claude app for MCP changes to take effect!"
+echo "   macOS: Cmd+Q to quit, then restart"
 echo ""
 echo "📝 Next Steps:"
-echo "   1. Run: claude code"
-echo "   2. Check if agents are available by typing: dev"
+echo "   1. Restart Claude app (if MCP was configured)"
+echo "   2. Run: claude code"
+echo "   3. Type: dev 간단한 React 컴포넌트를 만들어줘"
 echo ""
 echo "📚 Usage Examples:"
 echo "   dev 사용자 인증 기능을 구현해줘"

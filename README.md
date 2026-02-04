@@ -17,20 +17,17 @@ Claude Code를 위한 커스텀 플러그인 모음입니다.
 ## 빠른 시작
 
 ```bash
-# 1. Clone 저장소
+# 1. Clone
 git clone https://github.com/dyllisLev/claude-plugins.git
 cd claude-plugins
 
-# 2. 플러그인 설치 (agents, commands, skills)
+# 2. 설치 (플러그인 + MCP 서버 자동 설정)
 ./install.sh
 
-# 3. MCP 서버 설정
-./setup-mcp.sh
-
-# 4. Claude 앱 재시작 (중요!)
+# 3. Claude 앱 재시작 (필수!)
 # macOS: Cmd+Q로 종료 후 다시 실행
 
-# 5. 사용 시작
+# 4. Claude Code CLI 실행
 claude code
 ```
 
@@ -39,11 +36,11 @@ claude code
 dev 간단한 React 컴포넌트를 만들어줘
 ```
 
+**참고**: `claude code`는 터미널에서 실행하는 Claude의 CLI 도구입니다.
+
 ## 설치
 
-### 1단계: 플러그인 설치
-
-#### 자동 설치 (권장)
+### 자동 설치 (권장)
 
 ```bash
 git clone https://github.com/dyllisLev/claude-plugins.git
@@ -51,13 +48,22 @@ cd claude-plugins
 ./install.sh
 ```
 
-설치 스크립트는 심볼릭 링크를 사용하여 다음을 설치합니다:
-- `~/.claude/agents` → `dev-workflow/agents` (12개 에이전트)
-- `~/.claude/commands` → `dev-workflow/commands` (dev 명령어)
-- `~/.claude/skills/test-driven-development` (TDD 스킬)
-- `~/.claude/skills/systematic-debugging` (디버깅 스킬)
+설치 스크립트가 자동으로:
+1. **플러그인 설치** (심볼릭 링크)
+   - `~/.claude/agents` → `dev-workflow/agents` (12개 에이전트)
+   - `~/.claude/commands` → `dev-workflow/commands` (dev 명령어)
+   - `~/.claude/skills/test-driven-development`
+   - `~/.claude/skills/systematic-debugging`
 
-#### 수동 설치
+2. **MCP 서버 설정** (선택 가능)
+   - context7 (문서 조회)
+   - playwright (브라우저 자동화)
+
+설치 후 **Claude 앱을 재시작**해야 합니다 (Cmd+Q 후 재실행).
+
+### 수동 설치
+
+#### 1단계: 플러그인 설치
 
 ```bash
 git clone https://github.com/dyllisLev/claude-plugins.git
@@ -71,19 +77,15 @@ ln -s "$(pwd)/dev-workflow/skills/test-driven-development" ~/.claude/skills/test
 ln -s "$(pwd)/dev-workflow/skills/systematic-debugging" ~/.claude/skills/systematic-debugging
 ```
 
-### 2단계: MCP 서버 설정 (필수)
+#### 2단계: MCP 서버 설정 (필수)
 
-dev-workflow는 다음 MCP 서버가 필요합니다:
-
-#### 자동 설정 (권장)
+MCP 서버 자동 설정 (install.sh에서 건너뛴 경우):
 
 ```bash
 ./setup-mcp.sh
 ```
 
-설정 후 **Claude 앱을 재시작**해야 합니다.
-
-#### 수동 설정
+또는 수동 설정:
 
 `~/Library/Application Support/Claude/claude_desktop_config.json` 파일을 편집:
 
@@ -116,22 +118,27 @@ dev-workflow는 다음 MCP 서버가 필요합니다:
   - `mcp__playwright__browser_click` - 요소 클릭
   - `mcp__playwright__browser_take_screenshot` - 스크린샷
 
-### 3단계: (선택) frontend-design 스킬 설치
+### (선택) frontend-design 스킬 설치
 
 디자인 중심 UI 개발 시 추가 설치:
 
 ```bash
-# Claude Code에서 실행
+# Claude Code CLI에서 실행
+claude code
 /skills install frontend-design
 ```
 
 ## 사용법
 
-설치 후 Claude Code를 실행하고 `dev` 명령어를 사용합니다:
+Claude Code CLI를 실행:
 
 ```bash
 claude code
 ```
+
+> `claude code`는 터미널에서 Claude AI와 대화하며 코딩할 수 있는 CLI 도구입니다.
+
+입력 예시:
 
 ```
 dev 사용자 인증 기능을 구현해줘
@@ -179,11 +186,14 @@ claude code
 ### 동작 확인
 
 ```bash
+# Claude Code CLI 실행
 claude code
 
-# dev 명령어 테스트
+# 프롬프트에서 dev 명령어 테스트
 dev 간단한 React 컴포넌트를 만들어줘
 ```
+
+**참고**: `claude code`는 Claude의 CLI 도구이며, 일반 "Claude" 앱과는 다릅니다.
 
 ## 장점
 
