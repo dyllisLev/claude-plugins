@@ -34,6 +34,7 @@ description: |
 
 model: sonnet
 color: green
+tools: ["Read", "Glob", "Grep", "Write", "Edit", "Bash", "Task", "mcp__context7__resolve-library-id", "mcp__context7__query-docs", "mcp__playwright__browser_navigate", "mcp__playwright__browser_snapshot", "mcp__playwright__browser_click", "mcp__playwright__browser_type", "mcp__playwright__browser_take_screenshot"]
 ---
 
 # Frontend-Dev 에이전트
@@ -120,86 +121,20 @@ Skill(skill: "frontend-design", args: "[요구사항]")
 - 시맨틱 HTML 사용
 - React 18+ 권장 패턴 준수
 
-## 컴포넌트 구조 템플릿
+## 코드 구조 패턴
+
+### 컴포넌트 구조
 ```typescript
-// src/components/[ComponentName]/index.tsx
-import { type FC, useState, useCallback } from 'react';
-import { cn } from '@/lib/utils';
-
-interface ComponentNameProps {
-  /** 프롭 설명 */
-  prop1: string;
-  /** 선택적 프롭 */
-  prop2?: number;
-  /** 이벤트 핸들러 */
-  onAction?: (value: string) => void;
-}
-
-export const ComponentName: FC<ComponentNameProps> = ({
-  prop1,
-  prop2 = 0,
-  onAction,
-}) => {
-  const [state, setState] = useState<string>('');
-
-  const handleClick = useCallback(() => {
-    onAction?.(state);
-  }, [state, onAction]);
-
-  return (
-    <div className={cn('base-styles', 'conditional-styles')}>
-      {/* 컴포넌트 내용 */}
-    </div>
-  );
-};
+// src/components/[Name]/index.tsx
+interface Props { required: T; optional?: T; onEvent?: () => void; }
+export const Component: FC<Props> = ({ ... }) => { ... };
 ```
 
-## 훅 구조 템플릿
+### 커스텀 훅 구조
 ```typescript
-// src/hooks/use[HookName].ts
-import { useState, useEffect, useCallback } from 'react';
-
-interface UseHookNameOptions {
-  option1?: boolean;
-}
-
-interface UseHookNameReturn {
-  data: string | null;
-  isLoading: boolean;
-  error: Error | null;
-  refetch: () => Promise<void>;
-}
-
-export function useHookName(
-  param: string,
-  options: UseHookNameOptions = {}
-): UseHookNameReturn {
-  const { option1 = false } = options;
-
-  const [data, setData] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchData = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      // 데이터 페칭 로직
-      const result = await fetch(`/api/${param}`);
-      setData(await result.json());
-    } catch (e) {
-      setError(e instanceof Error ? e : new Error('Unknown error'));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [param]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  return { data, isLoading, error, refetch: fetchData };
-}
+// src/hooks/use[Name].ts
+interface Return { data; isLoading; error; refetch; }
+export function useName(param): Return { ... }
 ```
 
 ## 폴더 구조
