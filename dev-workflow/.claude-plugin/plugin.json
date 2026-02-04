@@ -1,0 +1,9 @@
+{
+  "name": "dev-workflow",
+  "version": "1.0.0",
+  "description": "React + Node.js + Python 개발 전체 라이프사이클을 지원하는 에이전트 시스템",
+  "author": {
+    "name": "Your Name"
+  },
+  "agents": "./agents"
+}
