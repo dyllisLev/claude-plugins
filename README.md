@@ -18,7 +18,7 @@ Claude Code를 위한 커스텀 플러그인 모음입니다.
 
 ```bash
 # 1. Clone 저장소
-git clone https://github.com/YOUR_USERNAME/claude-plugins.git
+git clone https://github.com/dyllisLev/claude-plugins.git
 cd claude-plugins
 
 # 2. 플러그인 설치 (agents, commands, skills)
@@ -46,7 +46,7 @@ dev 간단한 React 컴포넌트를 만들어줘
 #### 자동 설치 (권장)
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/claude-plugins.git
+git clone https://github.com/dyllisLev/claude-plugins.git
 cd claude-plugins
 ./install.sh
 ```
@@ -60,7 +60,7 @@ cd claude-plugins
 #### 수동 설치
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/claude-plugins.git
+git clone https://github.com/dyllisLev/claude-plugins.git
 cd claude-plugins
 
 # 심볼릭 링크 생성
