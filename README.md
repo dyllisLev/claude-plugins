@@ -14,6 +14,31 @@ Claude Code를 위한 커스텀 플러그인 모음입니다.
 - **MCP 통합**: context7 (문서 조회), playwright (브라우저 자동화)
 - **전체 의존성 맵**: [DEPENDENCIES.md](./dev-workflow/DEPENDENCIES.md) 참조
 
+## 빠른 시작
+
+```bash
+# 1. Clone 저장소
+git clone https://github.com/YOUR_USERNAME/claude-plugins.git
+cd claude-plugins
+
+# 2. 플러그인 설치 (agents, commands, skills)
+./install.sh
+
+# 3. MCP 서버 설정
+./setup-mcp.sh
+
+# 4. Claude 앱 재시작 (중요!)
+# macOS: Cmd+Q로 종료 후 다시 실행
+
+# 5. 사용 시작
+claude code
+```
+
+입력:
+```
+dev 간단한 React 컴포넌트를 만들어줘
+```
+
 ## 설치
 
 ### 1단계: 플러그인 설치
@@ -50,36 +75,18 @@ ln -s "$(pwd)/dev-workflow/skills/systematic-debugging" ~/.claude/skills/systema
 
 dev-workflow는 다음 MCP 서버가 필요합니다:
 
-#### context7 설정
-```bash
-# Claude Code 설정 열기
-# Settings → MCP Servers → Add Server
+#### 자동 설정 (권장)
 
-# context7 추가
-{
-  "mcpServers": {
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upggr/context7-mcp"]
-    }
-  }
-}
+```bash
+./setup-mcp.sh
 ```
 
-#### playwright 설정
-```bash
-# playwright MCP 추가
-{
-  "mcpServers": {
-    "playwright": {
-      "command": "npx",
-      "args": ["-y", "@executeautomation/playwright-mcp-server"]
-    }
-  }
-}
-```
+설정 후 **Claude 앱을 재시작**해야 합니다.
 
-#### 통합 설정 예시
+#### 수동 설정
+
+`~/Library/Application Support/Claude/claude_desktop_config.json` 파일을 편집:
+
 ```json
 {
   "mcpServers": {
@@ -94,6 +101,20 @@ dev-workflow는 다음 MCP 서버가 필요합니다:
   }
 }
 ```
+
+**중요**: 설정 후 Claude 앱을 재시작해야 MCP 서버가 활성화됩니다.
+
+#### MCP 서버 설명
+
+- **context7**: 라이브러리 문서 조회 (React, Next.js, Prisma 등)
+  - `mcp__context7__resolve-library-id` - 라이브러리 ID 조회
+  - `mcp__context7__query-docs` - 문서 질의
+
+- **playwright**: 브라우저 자동화 및 E2E 테스트
+  - `mcp__playwright__browser_navigate` - 페이지 이동
+  - `mcp__playwright__browser_snapshot` - 상태 캡처
+  - `mcp__playwright__browser_click` - 요소 클릭
+  - `mcp__playwright__browser_take_screenshot` - 스크린샷
 
 ### 3단계: (선택) frontend-design 스킬 설치
 
